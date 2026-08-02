@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
-  "https://tinylink-backend-54t1.onrender.com";
+  "https://tinylink-qyr2.vercel.app";
 
 export default function App() {
   const [url, setUrl] = useState("");
@@ -35,7 +35,10 @@ export default function App() {
 
     setLoading(true);
     try {
-      await axios.post(`${API_BASE}/api/links`, { originalUrl: url.trim() });
+      await axios.post(`${API_BASE}/api/links`, {
+        originalUrl: url.trim(),
+      });
+
       setUrl("");
       fetchLinks();
     } catch (err) {
@@ -48,7 +51,9 @@ export default function App() {
   return (
     <div className="container">
       <h1>TinyLink</h1>
-      <p className="subtitle">Shorten your links and track clicks in real time.</p>
+      <p className="subtitle">
+        Shorten your links and track clicks in real time.
+      </p>
 
       <div className="card">
         <form onSubmit={handleSubmit} className="form-row">
@@ -62,12 +67,19 @@ export default function App() {
             {loading ? "Shortening..." : "Shorten"}
           </button>
         </form>
+
         {error && <div className="error">{error}</div>}
       </div>
 
       <div className="card">
         <h3 style={{ marginTop: 0 }}>Your Links</h3>
-        {links.length === 0 && <div className="empty-state">No links yet. Create one above.</div>}
+
+        {links.length === 0 && (
+          <div className="empty-state">
+            No links yet. Create one above.
+          </div>
+        )}
+
         {links.map((link) => (
           <div className="link-item" key={link._id}>
             <div>
@@ -79,9 +91,13 @@ export default function App() {
               >
                 {API_BASE.replace(/^https?:\/\//, "")}/{link.shortCode}
               </a>
+
               <div className="link-original">{link.originalUrl}</div>
             </div>
-            <span className="click-badge">{link.clicks.length} clicks</span>
+
+            <span className="click-badge">
+              {link.clicks.length} clicks
+            </span>
           </div>
         ))}
       </div>
