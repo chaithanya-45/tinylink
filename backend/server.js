@@ -11,10 +11,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API routes
+// API Routes
 app.use("/api/links", linksRouter);
 
-// Redirect route
+// Redirect Route
 app.get("/:shortCode", async (req, res) => {
   try {
     const link = await Link.findOne({ shortCode: req.params.shortCode });
@@ -37,20 +37,28 @@ app.get("/:shortCode", async (req, res) => {
   }
 });
 
+// Home Route
 app.get("/", (req, res) => {
   res.send("TinyLink API is running.");
 });
 
-const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://localhost:27017/tinylink";
+// ========================
+// MongoDB Connection
+// ========================
+
+const MONGO_URI = process.env.MONGO_URI;
+
+// Debug (does NOT print your password)
+console.log("MONGO_URI exists:", !!MONGO_URI);
 
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("✅ Connected to MongoDB");
   })
   .catch((err) => {
-    console.error("MongoDB connection error:", err.message);
+    console.error("❌ MongoDB connection error:", err.message);
   });
 
+// Export for Vercel
 module.exports = app;
