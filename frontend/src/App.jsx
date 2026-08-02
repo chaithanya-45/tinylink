@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE ||
-  "https://tinylink-qyr2.vercel.app";
+const API_BASE = import.meta.env.VITE_API_BASE || "";
 
 export default function App() {
   const [url, setUrl] = useState("");
@@ -11,7 +9,12 @@ export default function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const configError = !API_BASE
+    ? "VITE_API_BASE is not configured. Set it to your backend's URL in this project's Vercel Environment Variables and redeploy."
+    : "";
+
   const fetchLinks = async () => {
+    if (!API_BASE) return;
     try {
       const res = await axios.get(`${API_BASE}/api/links`);
       setLinks(res.data);
@@ -27,6 +30,11 @@ export default function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (configError) {
+      setError(configError);
+      return;
+    }
 
     if (!url.trim()) {
       setError("Please enter a URL");
@@ -54,6 +62,8 @@ export default function App() {
       <p className="subtitle">
         Shorten your links and track clicks in real time.
       </p>
+
+      {configError && <div className="error">{configError}</div>}
 
       <div className="card">
         <form onSubmit={handleSubmit} className="form-row">
