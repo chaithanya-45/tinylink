@@ -1,112 +1,70 @@
-# 🔗 Tiny Link - URL Shortener
+# TinyLink – URL Shortener with Click Analytics
 
-A simple and efficient URL Shortener web application that converts long URLs into short, shareable links. Built using the MERN Stack with a clean and responsive user interface.
+A full-stack URL shortener built with React, Node.js, Express, and MongoDB. Generates short links using a Base62-style code (via `nanoid`) and tracks click analytics (timestamp, referrer) for each link in real time.
 
-## 🚀 Features
+## Tech Stack
+- **Frontend:** React (Vite), Axios
+- **Backend:** Node.js, Express
+- **Database:** MongoDB (Mongoose)
 
-- Shorten long URLs instantly
-- Generate unique short links
-- Redirect users to the original URL
-- Copy shortened URL with one click
-- Responsive user interface
-- MongoDB database for storing URLs
+## Features
+- Shorten any valid URL into a short code
+- Redirect from short link to original URL
+- Track total clicks and click history per link
+- Live dashboard showing all created links and their click counts
 
-## 🛠️ Tech Stack
-
-### Frontend
-- React.js
-- Vite
-- HTML5
-- CSS3
-- JavaScript
-
-### Backend
-- Node.js
-- Express.js
-
-### Database
-- MongoDB
-- Mongoose
-
-## 📂 Project Structure
-
+## Project Structure
 ```
-Tiny-Link/
-│
-├── client/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-│
-├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── config/
-│   ├── app.js
-│   └── package.json
-│
-└── README.md
+tinylink/
+├── backend/
+│   ├── models/Link.js       # Mongoose schema for links + clicks
+│   ├── routes/links.js      # API routes: create, list, stats
+│   ├── server.js            # Express app + redirect handler
+│   └── .env.example
+└── frontend/
+    ├── src/App.jsx          # Main UI: shorten form + dashboard
+    ├── src/main.jsx
+    └── src/index.css
 ```
 
-## ⚙️ Installation
+## Setup Instructions
 
-### Clone the repository
-
+### 1. Backend
 ```bash
-git clone https://github.com/yourusername/tiny-link.git
+cd backend
+npm install
+cp .env.example .env
+# Edit .env and add your MongoDB connection string
+npm run dev
 ```
+The API runs on `http://localhost:5000` by default.
 
-### Backend Setup
+You'll need a MongoDB connection string. The easiest way: create a free cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register), then copy the connection string into `.env` as `MONGO_URI`.
 
+### 2. Frontend
 ```bash
-cd server
+cd frontend
 npm install
 npm run dev
 ```
+The app runs on `http://localhost:5173` by default and talks to the backend at `http://localhost:5000`.
 
-### Frontend Setup
+If you deploy the backend elsewhere, set `VITE_API_BASE` in a `.env` file in `frontend/` to point to your deployed backend URL.
 
-```bash
-cd client
-npm install
-npm run dev
-```
+## API Endpoints
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/links` | Create a short link. Body: `{ "originalUrl": "https://..." }` |
+| GET | `/api/links` | List all links |
+| GET | `/api/links/:shortCode/stats` | Get click analytics for one link |
+| GET | `/:shortCode` | Redirects to original URL, logs a click |
 
-## 🔑 Environment Variables
+## Deployment
+- **Backend:** Deploy to [Render](https://render.com) or [Railway](https://railway.app) (free tier). Set `MONGO_URI` as an environment variable there.
+- **Frontend:** Deploy to [Vercel](https://vercel.com) or [Netlify](https://netlify.com). Set `VITE_API_BASE` to your deployed backend URL.
 
-Create a `.env` file inside the server folder.
-
-```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-BASE_URL=http://localhost:5000
-```
-
-## 📷 Screenshots
-
-Add screenshots of:
-
-- Home Page
-- URL Shortening
-- Generated Short Link
-
-## 🌟 Future Improvements
-
-- User Authentication
-- Link Analytics
-- QR Code Generation
-- Custom Short URLs
-- Expiration Dates for Links
-
-## 🤝 Contributing
-
-Contributions are welcome. Feel free to fork the repository and submit pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 👨‍💻 Author
-
-**Chaithanya Gurram**
+## What I'd Improve With More Time
+- Custom short codes (user-chosen aliases)
+- QR code generation for each short link
+- Link expiration dates
+- User accounts to manage personal links
